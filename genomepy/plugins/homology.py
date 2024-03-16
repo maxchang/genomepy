@@ -6,20 +6,24 @@ from loguru import logger
 
 from genomepy.plugins import Plugin
 
-ENSEMBL_PERMANENT_SITE = "apr2020.archive.ensembl.org"
+ENSEMBL_PERMANENT_SITE = "jan2024.archive.ensembl.org"
 
 
 class EnsemblHomologyPlugin(Plugin):
     homology_xml_query = """<?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE Query>
-    <Query  virtualSchemaName = "default" formatter = "CSV" header = "1" uniqueRows = "1" count = "" datasetConfigVersion = "0.6" >
+    <Query  virtualSchemaName = "default" formatter = "TSV" header = "1" uniqueRows = "1" count = "" datasetConfigVersion = "0.6" >
 
         <Dataset name = "{ensembl_shortname}_gene_ensembl" interface = "default" >
             <Filter name = "with_hsapiens_homolog" excluded = "0"/>
             <Attribute name = "ensembl_gene_id" />
+            <Attribute name = "external_gene_name" />
             <Attribute name = "hsapiens_homolog_ensembl_gene" />
+            <Attribute name = "hsapiens_homolog_associated_gene_name" />
             <Attribute name = "hsapiens_homolog_orthology_confidence" />
             <Attribute name = "hsapiens_homolog_orthology_type" />
+            <Attribute name = "hsapiens_homolog_perc_id_r1" />
+            <Attribute name = "hsapiens_homolog_perc_id" />
         </Dataset>
     </Query>"""
     # <Dataset name = "${ensembl_shortname}_gene_ensembl" interface = "default" >
@@ -60,5 +64,5 @@ class EnsemblHomologyPlugin(Plugin):
 
 
     def get_properties(self, genome):
-        props = {"human_homology": re.sub(".fa(.gz)?$", ".human_homology.csv", genome.filename)}
+        props = {"human_homology": re.sub(".fa(.gz)?$", ".human_homology.tsv", genome.filename)}
         return props
